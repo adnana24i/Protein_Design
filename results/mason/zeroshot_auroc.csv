@@ -1,0 +1,9 @@
+model,n_scored,auroc_overall,auroc_stratified
+esm1v_t33_650M_UR90S_1,36367,0.7269,0.6371
+blosum62,36367,0.5667,0.5623
+esm2_t33_650M_split,36367,0.6549,0.5617
+esm2_t30_150M,36367,0.6263,0.5555
+ablang2,36367,0.6783,0.5411
+esm2_t33_650M,36367,0.6372,0.5367
+random,36367,0.5300,0.5169
+baseline: fewer mutations,36368,0.7741,0.5000

@@ -1,0 +1,8 @@
+model,n_mutations,spearman_vs_measured,p_value
+esm1v_t33_650M_UR90S_1,190,0.1681,0.0204
+esm2_t33_650M_split,190,0.1636,0.0241
+esm2_t33_650M,190,0.1295,0.0749
+random,190,0.1146,0.1155
+blosum62,190,0.0548,0.4530
+ablang2,190,0.0483,0.5078
+esm2_t30_150M,190,-0.0458,0.5306

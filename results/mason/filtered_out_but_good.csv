@@ -1,0 +1,4 @@
+mutation,region,dist,votes,eligible,effect,measured_pctile,n_obs,reliable
+M107F,H3,9.3600,4,False,2.0819,1.0000,11565,True
+M107Y,H3,9.3600,3,False,1.1937,0.9293,5658,True
+D102C,H3,5.0800,0,False,1.0650,0.9091,4745,True

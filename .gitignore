@@ -1,0 +1,12 @@
+# Large, re-downloadable dataset: HER2-aff-large / oxpig Tz_her2_affinity_and_beyond.
+# ~1.9 GB locally and it contains model weight files of 300 MB+, which GitHub rejects
+# outright (100 MB hard limit per file). See README for how to fetch it.
+data/mason_dataset/
+
+# The small Mason CDR-H3 labels used by scripts/mason_affinity.py ARE tracked
+# (3.3 MB total) -- see data/mason/.
+
+# macOS and Python noise
+.DS_Store
+__pycache__/
+*.pyc

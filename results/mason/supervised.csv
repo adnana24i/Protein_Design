@@ -1,0 +1,7 @@
+model,n_train,n_test,auroc_test
+supervised: one-hot sequence,27276,9092,0.8914
+"supervised: one-hot, within n_mut=8 only",7172,2391,0.8386
+"supervised: one-hot, n_total=500",375,125,0.8749
+"supervised: one-hot, n_total=2000",1500,500,0.8712
+"supervised: one-hot, n_total=8000",6000,2000,0.8998
+supervised: ESM2 embeddings,1500,500,0.8515

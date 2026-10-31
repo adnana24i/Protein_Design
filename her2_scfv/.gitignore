@@ -1,0 +1,9 @@
+# generated / large / re-fetchable — do NOT commit
+out/
+*.npz
+*.cif
+her2_full.fasta
+__pycache__/
+.DS_Store
+cofold/
+*.bak

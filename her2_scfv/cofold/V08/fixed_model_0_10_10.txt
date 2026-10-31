@@ -1,0 +1,6 @@
+
+Chn1 Chn2  PAE Dist  Type   ipSAE    ipSAE_d0chn ipSAE_d0dom  ipTM_af  ipTM_d0chn     pDockQ     pDockQ2    LIS       n0res  n0chn  n0dom   d0res   d0chn   d0dom  nres1   nres2   dist1   dist2  Model
+A    B     10   10   asym  0.730906    0.861211    0.856930    0.902    0.861211      0.3862     0.5023     0.6561     143    385    368    4.45    7.10    6.96    225     143      48      38   her2_run/cofold/V08/2610311437/boltz_results_fixed/predictions/fixed/fixed_model_0
+B    A     10   10   asym  0.850854    0.891647    0.890083    0.879    0.891647      0.3862     0.4535     0.5281     242    385    377    5.76    7.10    7.04    135     242      35      44   her2_run/cofold/V08/2610311437/boltz_results_fixed/predictions/fixed/fixed_model_0
+A    B     10   10   max   0.850854    0.891647    0.890083    0.902    0.891647      0.3862     0.5023     0.5921     242    385    377    5.76    7.10    7.04    242     143      48      38   her2_run/cofold/V08/2610311437/boltz_results_fixed/predictions/fixed/fixed_model_0
+

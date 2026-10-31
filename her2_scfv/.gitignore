@@ -1,9 +1,14 @@
-# generated / large / re-fetchable — do NOT commit
-out/
+# Large / re-fetchable Boltz prediction tensors — do NOT commit.
+# We keep text provenance (ipSAE *.txt, confidence_*.json, ESM scan *.tsv) but
+# drop the heavy structure/PAE arrays.
 *.npz
 *.cif
 her2_full.fasta
 __pycache__/
 .DS_Store
-cofold/
 *.bak
+
+# NOTE: no blanket `out/` or `cofold/` rule — the ESM scan score TSVs
+# (esm_scan/out/*.tsv) and the per-variant ipSAE text outputs + confidence JSON
+# (cofold/<variant>/*) are intentionally tracked as provenance. The large Boltz
+# predictions (*.cif/*.npz) are still excluded by the patterns above.

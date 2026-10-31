@@ -103,6 +103,27 @@ Other resources from the deck:
 - Optimising on a small test budget: `adaptyvbio.com/blog/po101` and `po102`.
 - ProteinBase (open data, search what already binds a target): `proteinbase.com`.
 
+### Protein language models (PLMs) to use for proposing mutations
+
+All are transformer-based. Used zero-shot: mask a position (or score the full mutant), and compare the mutant residue's log-likelihood with the parent's. No training is needed. Model names and checkpoints should be verified before use.
+
+| Model | Type | Input | What we use it for | Caveat |
+|---|---|---|---|---|
+| **ESM2** (e.g. 650M; `adaptyv:esm`) | General protein masked LM | Single sequence (the scFv, 242 aa) | Score all 242 x 19 single mutants, then pairs among the top singles | Biased to typical residues: good for stability, weaker for affinity |
+| **ESM3** (`adaptyv:esm`) | General multimodal generative LM (sequence, structure, function) | Sequence, optionally structure | Second opinion to ESM2; structure-conditioned scoring | Check licence and model size / access |
+| **AbLang2** | Antibody-specific paired heavy/light masked LM | Paired VH + VL (split the scFv at the linker) | Masked scan over framework and CDRs | Germline-biased; favours common residues |
+| **DSM** (Synthyra) | Masked-diffusion ESM2 | Sequence, partly masked | Sample coherent multi-mutation variants with the parent partly masked | Same bias as ESM2; sampled sequences must be re-checked against the rules |
+| **ProFam-1** | Family-as-prompt PLM, open weights | Prompt set of related antibodies + query | Score mutations in the context of a trastuzumab-like family (human VH3 / VK1) | Result depends on the prompt set we choose |
+| **EVOLVEpro** | PLM embeddings + few-shot active learning | Embeddings + measured labels | Only if we have labels (round 2 or ProteinBase seed data) | Not useful zero-shot |
+
+Related structure-conditioned models (not PLMs, see steps 4 and 6): AbMPNN / ProteinMPNN (`adaptyv:proteinmpnn`), and ESM-IF as an optional extra.
+
+Practical notes:
+- For paired models (AbLang2), split the scFv into VH (residues 1-120) and VL (136-242) and exclude the linker. Map positions back to scFv numbering.
+- For single-chain models (ESM2/ESM3/DSM), score the full 242 aa scFv. Optionally also score VH and VL separately to check that results are robust to the linker.
+- Combine scores by rank agreement across models, not by averaging raw values (the scales differ).
+- Keep a single `data/scores/plm_scan.csv` with one row per (position, mutant residue) and one column per model, so voting in step 5 is one query.
+
 ---
 
 ## 5. Step-by-step implementation

@@ -99,25 +99,25 @@ Note: `_split` variants are robustness checks of the same model and are not coun
 
 ## Layer 3. Variant pool
 
-15 variants; 15 pass the hackathon rules; 15 distinct positions mutated; mean pairwise mutation overlap (Jaccard) 0.21.
+15 variants; 15 pass the hackathon rules; 20 distinct positions mutated; mean pairwise mutation overlap (Jaccard) 0.26.
 
 ```
-    id  n_mut  valid errors  sum_ablang2  sum_blosum62  sum_esm1v_t33_650M_UR90S_1  sum_esm2_t30_150M  sum_esm2_t33_650M  sum_esm2_t33_650M_split  sum_random
-TZ01_A      5   True               -0.61          -2.0                       -2.77               2.01              -4.31                    -2.95       -4.72
-TZ02_A      5   True               -3.43          -4.0                       -2.19               1.97              -1.87                    -0.19       -4.76
-TZ03_A      5   True                6.68           0.0                        2.39               5.18               2.78                     3.08       -3.02
-TZ04_A      5   True                3.86          -2.0                        2.96               5.13               5.22                     5.85       -3.05
-TZ05_A      5   True               -0.18          -3.0                        0.42               1.33              -0.15                    -0.18       -2.93
-TZ06_B      5   True               -3.30          -1.0                       -4.75               3.24              -0.78                     0.31       -2.83
-TZ07_B      5   True                3.99           1.0                        0.41               6.41               6.31                     6.34       -1.12
-TZ08_B      5   True               -0.08          -4.0                       -0.20              -1.50               3.52                     3.23       -1.87
-TZ09_B      5   True               -5.80          -3.0                       -0.37               5.34               2.15                     2.43       -2.13
-TZ10_C      5   True                0.72           0.0                       -0.65               6.48               4.58                     5.35        1.78
-TZ11_C      5   True                3.07           1.0                        1.00               5.04               3.99                     4.28       -1.28
-TZ12_C      5   True                2.14           0.0                       -2.92               6.65               5.25                     5.48        1.59
-TZ13_D      5   True                3.92          -1.0                        8.04               8.31               8.80                     8.85       -2.10
-TZ14_D      5   True                6.31          -1.0                        5.58               6.99               9.30                     8.66       -1.29
-TZ15_D      5   True                5.02           2.0                        5.39               4.27               7.18                     7.35       -3.45
+   id  n_mut  valid errors  sum_ablang2  sum_blosum62  sum_esm1v_t33_650M_UR90S_1  sum_esm2_t30_150M  sum_esm2_t33_650M  sum_esm2_t33_650M_split  sum_random
+M01_M      5   True               -0.61          -2.0                       -2.77               2.01              -4.31                    -2.95       -4.72
+M02_M      5   True                6.68           0.0                        2.39               5.18               2.78                     3.08       -3.02
+M03_M      5   True               -0.18          -3.0                        0.42               1.33              -0.15                    -0.18       -2.93
+M04_M      5   True                4.56          -1.0                       -1.90               5.48               3.16                     3.40        0.40
+M05_M      5   True                5.49           0.0                        2.03               3.87               1.89                     2.20       -2.48
+M06_X      5   True                4.47          -3.0                        3.14               3.04               1.19                     1.37       -2.75
+M07_X      5   True                3.94          -5.0                        0.19               3.58              -2.80                    -1.35       -4.77
+M08_X      5   True                5.57          -4.0                        0.73               4.75              -1.21                     0.06       -5.01
+M09_X      5   True                8.03          -4.0                        1.62               4.98               0.62                     1.91       -3.40
+M10_L      5   True               -1.39          -7.0                       -4.34               0.13              -7.10                    -5.24       -3.24
+M11_L      5   True               -6.14          -5.0                       -8.79              -4.68              -9.40                    -7.71       -2.06
+M12_L      5   True               -4.73          -6.0                      -10.71              -2.84             -10.88                    -9.90       -2.63
+M13_I      5   True              -14.75          -4.0                       -5.29              -3.24               1.26                     1.05        0.68
+M14_I      5   True               -2.14          -4.0                        3.40              -1.43               3.63                     4.32       -1.16
+M15_D      5   True                3.92          -1.0                        8.04               8.31               8.80                     8.85       -2.10
 ```
 
 _No `kd_nM` column: variants were validated and scored but no performance can be measured yet._

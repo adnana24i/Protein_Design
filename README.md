@@ -155,7 +155,7 @@ Practical notes:
 - For paired models (AbLang2), split the scFv into VH (residues 1-120) and VL (136-242) and exclude the linker. Map positions back to scFv numbering.
 - For single-chain models (ESM2/ESM3/DSM), score the full 242 aa scFv. Optionally also score VH and VL separately to check that results are robust to the linker.
 - Combine scores by rank agreement across models, not by averaging raw values (the scales differ).
-- Keep a single `data/scores/plm_scan.csv` with one row per (position, mutant residue) and one column per model, so voting in step 5 is one query.
+- Each model writes its own `data/scores/<model>_scan.csv` with one row per (position, mutant residue). Merge them on `scfv_index` + `mut` into one `data/scores/plm_scan.csv` (one LLR column per model) so voting in step 5 is one query.
 
 ---
 
@@ -214,6 +214,42 @@ Guidance for what to mutate:
 - Structure-based design (MPNN, Mosaic) is where **affinity** gains can come from, and also where most failures come from. Limit it to the CDR periphery and second-shell positions.
 - Treat CDR-H3 and the central paratope contacts as high risk.
 - Do not mutate the Cys residues that form the disulfide bonds, nor the linker (it must remain `(GGGGS)3`).
+
+#### Implemented: Method 1, ESM2 zero-shot single-mutant scan
+
+Script: [scripts/esm2_scan.py](scripts/esm2_scan.py) (full documentation is in its header). Runs locally (PyTorch, Apple MPS / CUDA / CPU), no Modal needed.
+
+**What it does.** For each of the 242 positions and each of the 19 alternative residues (4,598 single mutants) it computes the log-likelihood ratio `LLR = log p(mutant) - log p(parent residue)` from ESM2 (`facebook/esm2_t33_650M_UR50D`). Two standard modes are computed (Meier et al. 2021): *masked marginals* (mask the position, 242 forward passes, primary score `llr_masked`) and *wild-type marginals* (one pass, `llr_wt`, cross-check). `--context split` scores VH and VL separately without the linker as a robustness check.
+
+**Run.**
+```
+python3 -I scripts/esm2_scan.py --model facebook/esm2_t12_35M_UR50D   # 30 s smoke test
+python3 -I scripts/esm2_scan.py --model facebook/esm2_t33_650M_UR50D  # main run, about 3 min on an M-series Mac
+python3 -I scripts/esm2_scan.py --context split                        # robustness check
+```
+
+**Outputs** (`data/scores/`):
+| File | Content |
+|---|---|
+| `esm2_t33_650M_scan.csv` | All 4,598 mutants with region, distance to HER2, `llr_masked`, `llr_wt`, rank |
+| `esm2_t33_650M_positions.csv` | Per position: probability of the parent residue, entropy, mean LLR, best mutation |
+| `esm2_t33_650M_shortlist.csv` | First-pass filtered mutations (165 rows): not in the linker, not a disulfide Cys, not to Cys, LLR >= 0, more than 4.5 A from HER2, parent residue not "suspect" |
+| `*_split_*.csv` | Same, VH and VL scored separately |
+
+**Built-in sanity checks and what they showed (650M, scFv context).**
+- Disulfide cysteines: mean LLR -9.9 for all substitutions. Correct, indexing is right.
+- Masked vs. wt-marginal Spearman 0.98; scFv vs. split context position-level Spearman 0.98. The result does not depend on the linker.
+- Only 2.6% of framework mutations have LLR >= 0, against 10-29% in CDRs. The model sees the framework as conserved and the CDRs as variable, as expected.
+- HER2-contact residues have *higher* mean LLR (-1.1) than non-contact residues (-5.6). ESM2 therefore does **not** know which CDR residues are important for HER2 binding. It only knows what is typical for an antibody. This is the main reason it must not be used alone.
+
+**A model artefact we found and handled.** VL F83 (scFv 218) got LLR +9.9 for F->E and positive scores for almost every substitution, which flooded the top of the ranking. Inspecting the model: the parent Phe gets p = 0.0001 while Glu gets p = 0.74, for a conserved framework residue. It reproduces in split context, so it is a model quirk rather than a linker or indexing bug (we could not find the cause). The script now flags positions where the parent residue has p < 0.01 (`suspect_wt`) and removes them from the shortlist: scFv 218 (VL F83), 32 (VH T32), 72 (VH A72), 188 (VL F188 = VL F53, a HER2 contact). Treat these as "needs a second model", not as discoveries.
+
+**How to read the result and use it in step 5.**
+- The shortlist is one vote, not a design. Highest-scoring shortlist mutations include VL R66G, VL V33L, VH S97A, VL K42E/Q, VH E1Q and VH K30S/G/T/A. Many are framework or N-terminal changes that probably help stability or expression and are unlikely to change KD.
+- Interesting: VH N55S / N55G sit in the `N55-G56` motif (`PTNGYT`), a known deamidation hotspot, and are 5.3 A from HER2. Candidate for a liability fix, but a close-to-interface change that needs the structure check.
+- Next: require agreement with AbLang2 / DSM / ProFam-1 and AbMPNN, then combine into 5+ mutation variants (step 6).
+
+**Limitations.** Single mutants only (no epistasis, pairs are the next extension). The model scores plausibility, not affinity. The score is relative to this exact scFv context.
 
 Output: one tidy table `results/candidates.csv` with columns: variant id, mutations (e.g. `H:S30T`), source tool(s), per-model scores.
 
